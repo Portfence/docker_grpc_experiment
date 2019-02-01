@@ -16,7 +16,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 set(PROJECT_TEST_DIR ${PROJECT_SOURCE_DIR}/unit_tests)
 set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-set(PROJECT_PROTO_DIR ${PROJECT_SOURCE_DIR}/protos)
+set(PROJECT_PROTO_DIR ${PROJECT_SOURCE_DIR}/../protos)
 
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
 
@@ -28,6 +28,10 @@ find_package(Boost
 	REQUIRED
 )
 
+find_package(Protobuf
+	REQUIRED
+)
+
 #find_package("package 2 name"
 #	COMPONENTS
 #		"component 1"
@@ -36,19 +40,32 @@ find_package(Boost
 #)
 
 # #############################################################################
-add_executable(${PROJECT_EXEC} ${PROJECT_SOURCE_DIR}/main.cpp)
+# generate cpp files from .proto
+protobuf_generate_cpp(PROJECT_PROTO_SRC PROJECT_PROTO_INCLUDE 
+			${PROJECT_PROTO_DIR}/AddressBook.proto
+)
+# Note: PROJECT_PROTO_SRC/INCLUDE points directly to AddressBook.pb.cc/h, needs to be generic
+# in the future
+
+# #############################################################################
+add_executable(${PROJECT_EXEC}
+		${PROJECT_SOURCE_DIR}/main.cpp
+		${PROJECT_PROTO_SRC}
+		${PROJECT_PROTO_INCLUDE}
+)
 
 # include directories for target
 target_include_directories(${PROJECT_EXEC}
 	PRIVATE
 		${PROJECT_INCLUDE_DIR}
+		# ${PROJECT_PROTO_INCLUDE} # this is a file (not directory)
 )
 
-# Needed for boost library
-# target_link_libraries(${PROJECT_EXEC}
-# 	PRIVATE
-# 		package libraries path
-# )
+# Links requied libraries
+target_link_libraries(${PROJECT_EXEC}
+	PRIVATE
+	${PROTOBUF_LIBRARIES}
+ )
 
 # #############################################################################
 # create executable for performing unit tests
