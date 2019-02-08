@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Project name
-project("gRPC_Node_1" CXX)
+project("gRPC_Node_2" CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
 # name of project executable
-set(PROJECT_EXEC run_server_executable)
+set(PROJECT_EXEC run_client_executable)
 
 # Set output folder where program will be created
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
@@ -67,7 +67,7 @@ add_custom_command(
 # ############################ Create binaries ################################
 add_executable(${PROJECT_EXEC}
 		${PROJECT_SOURCE_DIR}/main.cpp
-		${PROJECT_SOURCE_DIR}/server_implementation.cpp
+		${PROJECT_SOURCE_DIR}/client_implementation.cpp
 		${PROJECT_PROTO_SRC}
 		${PROJECT_PROTO_INCLUDE}
 		${PROJECT_GRPC_SRC}
@@ -78,8 +78,9 @@ add_executable(${PROJECT_EXEC}
 target_include_directories(${PROJECT_EXEC}
 	PRIVATE
 		${PROJECT_INCLUDE_DIR}
-    ${GRPC_INCLUDE_DIR}	
+    ${GRPC_INCLUDE_DIRS}	
     ${Protobuf_INCLUDE_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}/custom_grpc
 )
 
 # Links requied libraries
@@ -91,33 +92,38 @@ target_link_libraries(${PROJECT_EXEC}
 
 # ########################## Create tests #####################################
 # create executable for performing unit tests
-#add_definitions(-DBOOST_TEST_DYN_LINK)
+add_definitions(-DBOOST_TEST_DYN_LINK)
 
-#set(CLASS_TEST_EXEC run_server_implementation_tests)
-#add_executable(${CLASS_TEST_EXEC}
-#		${PROJECT_TEST_DIR}/server_implementation_tests.cpp
-#		${PROJECT_SOURCE_DIR}/server_implementation.cpp
-#)
-#
-#target_include_directories(${CLASS_TEST_EXEC}
-#	PRIVATE
-#		${PROJECT_INCLUDE_DIR}
-#		${GRPC_INCLUDE_DIR}
-#		${Protobuf_INCLUDE_DIR}
-#		${BOOST_INCLUDE_DIR}
-#)
-#
-#target_link_libraries(${CLASS_TEST_EXEC}
-#	PRIVATE
-#		gRPC::grpc++
-#		${Protobuf_LIBRARIES}
-#		${Boost_LIBRARIES}
-#)
-#
-#add_test(
-#	NAME
-#		ServerImplementationTest
-#	COMMAND
-#		${CLASS_TEST_EXEC}
-#)
+set(CLASS_TEST_EXEC run_client_implementation_tests)
+add_executable(${CLASS_TEST_EXEC}
+		${PROJECT_TEST_DIR}/client_implementation_tests.cpp
+		${PROJECT_SOURCE_DIR}/client_implementation.cpp
+		${PROJECT_PROTO_SRC}
+		${PROJECT_PROTO_INCLUDE}
+		${PROJECT_GRPC_SRC}
+		${PROJECT_GRPC_INCLUDE}
+
+)
+
+target_include_directories(${CLASS_TEST_EXEC}
+	PRIVATE
+		${PROJECT_INCLUDE_DIR}
+		${GRPC_INCLUDE_DIR}
+		${Protobuf_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
+
+target_link_libraries(${CLASS_TEST_EXEC}
+	PRIVATE
+		gRPC::grpc++
+		${Protobuf_LIBRARIES}
+		${Boost_LIBRARIES}
+)
+
+add_test(
+	NAME
+		ClientImplementationTest
+	COMMAND
+		${CLASS_TEST_EXEC}
+)
 # #############################################################################
