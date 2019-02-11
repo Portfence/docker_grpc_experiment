@@ -11,7 +11,7 @@ int main(int argc, char * argv[])
 	char* buf;
 	getlogin_r(buf, sizeof(buf));
 	int id = 666;
-	std::string address = "127.0.0.1:4000";
+	std::string address = "172.17.0.2:4000";
 
 	// create a client instance
 	ClientImplementation c(std::string(buf), id);
