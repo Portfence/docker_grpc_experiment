@@ -6,6 +6,7 @@
 
 using Utilities::Request;
 using Utilities::Response;
+using Utilities::TemperatureResponse;
 using Utilities::Connection;
 using grpc::ClientContext;
 using grpc::Channel;
@@ -18,6 +19,7 @@ class ClientImplementation
     ClientImplementation(std::string username, int userId);
     int connect(std::string address);
 		std::string CheckUptime();
+		std::string CheckTemperature();
   private:
     std::unique_ptr<Connection::Stub> m_Stub;
 		std::string m_Username;

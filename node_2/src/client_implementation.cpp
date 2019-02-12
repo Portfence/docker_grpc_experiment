@@ -46,3 +46,23 @@ std::string ClientImplementation::CheckUptime()
 	}
 }
 
+std::string ClientImplementation::CheckTemperature()
+{
+	Request request;
+	request.set_name(m_Username);
+	request.set_id(m_UserId);
+	TemperatureResponse response;
+
+	ClientContext context;
+
+	Status status = m_Stub->CheckTemperature(&context, request, &response);
+	if (status.ok())
+	{
+		return "Server temperature: " + std::to_string(response.temperature()) + " degrees C";
+	}
+	else
+	{
+		return "Server temperature: RPC failed";
+	}
+}
+
