@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
 	golang \
 	libboost-system1.65-dev \
 	libboost-test1.65-dev \
+	libboost-thread1.65-dev \
+	libboost-random1.65-dev \
 	libc++-dev \
 	libc-ares2 \
 	libgflags-dev \
@@ -26,4 +28,8 @@ RUN apt-get update && apt-get install -y \
 	zlib1g-dev
 RUN chmod +x Docker/build_grpc.sh
 RUN ./Docker/build_grpc.sh
+
+RUN chmod +x Docker/build_server.sh
+RUN ./Docker/build_server.sh
+
 EXPOSE 4000

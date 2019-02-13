@@ -91,33 +91,38 @@ target_link_libraries(${PROJECT_EXEC}
 
 # ########################## Create tests #####################################
 # create executable for performing unit tests
-#add_definitions(-DBOOST_TEST_DYN_LINK)
+add_definitions(-DBOOST_TEST_DYN_LINK)
 
-#set(CLASS_TEST_EXEC run_server_implementation_tests)
-#add_executable(${CLASS_TEST_EXEC}
-#		${PROJECT_TEST_DIR}/server_implementation_tests.cpp
-#		${PROJECT_SOURCE_DIR}/server_implementation.cpp
-#)
-#
-#target_include_directories(${CLASS_TEST_EXEC}
-#	PRIVATE
-#		${PROJECT_INCLUDE_DIR}
-#		${GRPC_INCLUDE_DIR}
-#		${Protobuf_INCLUDE_DIR}
-#		${BOOST_INCLUDE_DIR}
-#)
-#
-#target_link_libraries(${CLASS_TEST_EXEC}
-#	PRIVATE
-#		gRPC::grpc++
-#		${Protobuf_LIBRARIES}
-#		${Boost_LIBRARIES}
-#)
-#
-#add_test(
-#	NAME
-#		ServerImplementationTest
-#	COMMAND
-#		${CLASS_TEST_EXEC}
-#)
+set(CLASS_TEST_EXEC run_server_implementation_tests)
+add_executable(${CLASS_TEST_EXEC}
+		${PROJECT_TEST_DIR}/server_implementation_tests.cpp
+		${PROJECT_SOURCE_DIR}/server_implementation.cpp
+		${PROJECT_PROTO_SRC}
+		${PROJECT_PROTO_INCLUDE}
+		${PROJECT_GRPC_SRC}
+		${PROJECT_GRPC_INCLUDE}
+
+)
+
+target_include_directories(${CLASS_TEST_EXEC}
+	PRIVATE
+		${PROJECT_INCLUDE_DIR}
+		${GRPC_INCLUDE_DIR}
+		${Protobuf_INCLUDE_DIR}
+		${BOOST_INCLUDE_DIR}
+)
+
+target_link_libraries(${CLASS_TEST_EXEC}
+	PRIVATE
+		gRPC::grpc++
+		${Protobuf_LIBRARIES}
+		${Boost_LIBRARIES}
+)
+
+add_test(
+	NAME
+		ServerImplementationTest
+	COMMAND
+		${CLASS_TEST_EXEC}
+)
 # #############################################################################

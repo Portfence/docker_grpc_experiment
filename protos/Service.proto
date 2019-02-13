@@ -5,6 +5,7 @@ package Utilities;
 service Connection
 { 
   rpc CheckUptime (Request) returns (Response) {}
+	rpc CheckTemperature (Request) returns (TemperatureResponse) {}
 }
 
 message Request
@@ -16,5 +17,10 @@ message Request
 message Response
 {
   string uptime = 1;
+}
+
+message TemperatureResponse
+{
+	double temperature = 1;
 }
 

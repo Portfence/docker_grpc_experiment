@@ -6,7 +6,9 @@ using std::endl;
 
 int main(int argc, char * argv[])
 {
-	ServerImplementation server("172.17.0.2:4000");
+	// 0.0.0.0 as host address corresponds to INADDR_ANY
+	// (any IP address on local machine)
+	ServerImplementation server("0.0.0.0:4000");
 	server.startServer();
-  return 0;
+	return 0;
 }

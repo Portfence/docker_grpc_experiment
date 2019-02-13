@@ -23,6 +23,7 @@ set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src) # point to source code instead
 find_package(Boost
 	COMPONENTS
 		unit_test_framework
+		thread
 		system
 	REQUIRED
 )
@@ -88,6 +89,7 @@ target_link_libraries(${PROJECT_EXEC}
    PRIVATE	
 		gRPC::grpc++
 		${Protobuf_LIBRARIES}
+		${Boost_LIBRARIES}
 )
 
 # ########################## Create tests #####################################
