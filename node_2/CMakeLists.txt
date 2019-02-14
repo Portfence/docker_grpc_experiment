@@ -8,16 +8,16 @@ set(CMAKE_CXX_STANDARD 17)
 # name of project executable
 set(PROJECT_EXEC run_client_executable)
 
-# Set output folder where program will be created
+# Set output folder
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
 # define directory structure
 set(PROJECT_TEST_DIR ${CMAKE_SOURCE_DIR}/unit_tests)
 set(PROJECT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(PROJECT_PROTO_DIR "${CMAKE_SOURCE_DIR}/../protos")
-set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src) # point to source code instead
+set(PROJECT_SRC_DIR ${PROJECT_SOURCE_DIR}/src) # point to source code instead
 
 # Tell cmake which packages to find
 find_package(Boost
@@ -65,14 +65,19 @@ add_custom_command(
 					"${PROJECT_PROTO_FILES}"
 )
 
-# ############################ Create binaries ################################
-add_executable(${PROJECT_EXEC}
-		${PROJECT_SOURCE_DIR}/main.cpp
-		${PROJECT_SOURCE_DIR}/client_implementation.cpp
+add_library(generatedprotos
+	STATIC
 		${PROJECT_PROTO_SRC}
 		${PROJECT_PROTO_INCLUDE}
 		${PROJECT_GRPC_SRC}
 		${PROJECT_GRPC_INCLUDE}
+)
+
+
+# ############################ Create binaries ################################
+add_executable(${PROJECT_EXEC}
+		${PROJECT_SRC_DIR}/main.cpp
+		${PROJECT_SRC_DIR}/client_implementation.cpp
 )
 
 # include directories for target
@@ -81,7 +86,6 @@ target_include_directories(${PROJECT_EXEC}
 		${PROJECT_INCLUDE_DIR}
     ${GRPC_INCLUDE_DIRS}	
     ${Protobuf_INCLUDE_DIR}
-		${CMAKE_CURRENT_BINARY_DIR}/custom_grpc
 )
 
 # Links requied libraries
@@ -90,6 +94,7 @@ target_link_libraries(${PROJECT_EXEC}
 		gRPC::grpc++
 		${Protobuf_LIBRARIES}
 		${Boost_LIBRARIES}
+		${LIBRARY_OUTPUT_PATH}/libgeneratedprotos.a
 )
 
 # ########################## Create tests #####################################
@@ -99,12 +104,7 @@ add_definitions(-DBOOST_TEST_DYN_LINK)
 set(CLASS_TEST_EXEC run_client_implementation_tests)
 add_executable(${CLASS_TEST_EXEC}
 		${PROJECT_TEST_DIR}/client_implementation_tests.cpp
-		${PROJECT_SOURCE_DIR}/client_implementation.cpp
-		${PROJECT_PROTO_SRC}
-		${PROJECT_PROTO_INCLUDE}
-		${PROJECT_GRPC_SRC}
-		${PROJECT_GRPC_INCLUDE}
-
+		${PROJECT_SRC_DIR}/client_implementation.cpp
 )
 
 target_include_directories(${CLASS_TEST_EXEC}
@@ -120,6 +120,7 @@ target_link_libraries(${CLASS_TEST_EXEC}
 		gRPC::grpc++
 		${Protobuf_LIBRARIES}
 		${Boost_LIBRARIES}
+		${LIBRARY_OUTPUT_PATH}/libgeneratedprotos.a
 )
 
 add_test(
