@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
 	// Client parameters
 	char* buf = getlogin();
 	int id = 666;
-	std::string address = "192.168.177.210:4000";
+	std::string address = "0.0.0.0:4000";
 
 	// Client instance
 	ClientImplementation client(std::string(buf), id);
